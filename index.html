@@ -74,6 +74,8 @@
       let container = document.querySelector('.container')
       let frameContainer = document.querySelector('.frame-container')
 
+      let isRisky = true
+
       const sl = new webkitSpeechRecognition()
       sl.lang = 'th-TH'
 
@@ -187,11 +189,16 @@
         รัก: `url(${PBoAvatar}) no-repeat center`
       }
 
+      const setRisky = state => (isRisky = state)
+
       sl.onresult = e => {
         textDisplay = document.querySelector('.display')
 
         const text = e.results[0][0].transcript
         console.info('💬:', text)
+
+        if (text.includes('ไม่เสี่ยงคุก')) return setRisky(false)
+        if (text.includes('เสี่ยงคุก')) return setRisky(true)
 
         if (text.includes('ดูวีดีโอ')) return focusVideo()
         if (text.includes('ซ่อนวีดีโอ')) return unfocusVideo()
@@ -201,7 +208,7 @@
 
         if (text.includes('ทะเล')) {
           playVideo('pnxFIYwGTPU')
-        } else if (text.includes('โอ')) {
+        } else if (isRisky && text.includes('โอ')) {
           playVideo('vIgghnnE5Lg')
           bgColor('linear-gradient(45deg, #fb872b, #d9e021)')
 
