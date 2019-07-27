@@ -157,6 +157,8 @@
         }
 
         u.onstart = e => {
+          sl.stop()
+
           currentTTS = sid
 
           console.info('🖥:', text)
@@ -166,6 +168,8 @@
           if (currentTTS !== sid) return
 
           currentTTS = false
+
+          listen()
         }
 
         speechSynthesis.speak(u)
@@ -190,6 +194,7 @@
       }
 
       const setRisky = state => (isRisky = state)
+      const setText = text => (textDisplay.innerHTML = text)
 
       sl.onresult = e => {
         textDisplay = document.querySelector('.display')
@@ -204,7 +209,24 @@
         if (text.includes('ซ่อนวีดีโอ')) return unfocusVideo()
         if (text.includes('วิดีโอ')) return
 
-        textDisplay.innerHTML = text
+        if (text.includes('สวัสดี')) {
+          return speak('สวัสดีค่ะ')
+        }
+
+        const pad = n => (n < 10 ? '0' + n : n)
+
+        if (text.includes('กี่โมง')) {
+          const d = new Date()
+          const h = d.getHours()
+          const m = d.getMinutes()
+
+          speak(`ขณะนี้เวลา ${h} นาฬิกา ${m} นาที`)
+          setText(`เวลา ${pad(h)}:${pad(m)}`)
+
+          return
+        }
+
+        setText(text)
 
         if (text.includes('ทะเล')) {
           playVideo('pnxFIYwGTPU')
@@ -213,16 +235,12 @@
           setColor('linear-gradient(45deg, #fb872b, #d9e021)')
 
           setTimeout(() => {
-            textDisplay.innerHTML = 'สุขสันต์วันเกิด'
+            setText('สุขสันต์วันเกิด')
           }, 1500)
 
           return
         } else {
           stopVideo()
-        }
-
-        if (text.includes('สวัสดี')) {
-          return speak('สวัสดีค่ะ')
         }
 
         const lightColors = ['yellow', 'lightblue']
@@ -244,15 +262,7 @@
       }
 
       function listen() {
-        if (currentTTS) {
-          console.warn('TTS in Action.')
-
-          setTimeout(() => {
-            listen()
-          }, 3000)
-
-          return
-        }
+        if (currentTTS) return
 
         console.log('👂: ฟังอยู่')
 
