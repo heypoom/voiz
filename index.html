@@ -79,9 +79,9 @@
       const sl = new webkitSpeechRecognition()
       sl.lang = 'th-TH'
 
-      const bgColor = color => {
+      const setColor = (color, textColor = 'white') => {
         container.style.background = color
-        textDisplay.style.color = 'white'
+        textDisplay.style.color = textColor
       }
 
       const PBoAvatar = `https://scontent.fbkk5-6.fna.fbcdn.net/v/t1.0-9/44073583_10155937461019103_8107487220652310528_n.jpg?_nc_cat=102&_nc_eui2=AeE79JtbpG6HZVD5YGPdSOtXgXdxSY0Rb4zDiuYbR0otGY8AFGMaNxxGaTZSvlsO93F0Bk4EMVRKmR7U7Tjr4HC5ti9u2ksAI08tiUDjryPXNQ&_nc_oc=AQmiJagh-MmVsBddMcRzA7m1eyQcz7jUsxsHM2nY3qs0kMh7Syp0jWCFpI3HnQw3TMw&_nc_ht=scontent.fbkk5-6.fna&oh=1219ad6c54ef2bb549dcac843f66a595&oe=5DE513DE`
@@ -175,7 +175,7 @@
 
       const colorMap = {
         แดง: 'red',
-        เหลือง: 'blue',
+        เหลือง: 'yellow',
         ม่วง: 'purple',
         คราม: 'purple',
         แสด: 'orange',
@@ -210,7 +210,7 @@
           playVideo('pnxFIYwGTPU')
         } else if (isRisky && text.includes('โอ')) {
           playVideo('vIgghnnE5Lg')
-          bgColor('linear-gradient(45deg, #fb872b, #d9e021)')
+          setColor('linear-gradient(45deg, #fb872b, #d9e021)')
 
           setTimeout(() => {
             textDisplay.innerHTML = 'สุขสันต์วันเกิด'
@@ -225,9 +225,17 @@
           return speak('สวัสดีค่ะ')
         }
 
+        const lightColors = ['yellow', 'lightblue']
+
         for (let thaiColor in colorMap) {
           if (text.includes(thaiColor)) {
-            return bgColor(colorMap[thaiColor])
+            const color = colorMap[thaiColor]
+
+            for (let c of lightColors) {
+              if (c === color) return setColor(color, '#2d2d30')
+            }
+
+            return setColor(color)
           }
         }
 
