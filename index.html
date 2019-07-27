@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Voiz</title>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: Sukhumvit Set, Helvetica Neue, sans-serif;
+      }
+
+      .display {
+        margin: 0;
+        font-size: 8em;
+        text-align: center;
+        color: #2d2d30;
+
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 100vh;
+        padding: 1.8em;
+
+        transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
+      }
+
+      .error {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: #fa8072ee;
+        transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
+
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 100vh;
+
+        font-size: 5em;
+        color: white;
+
+        display: none;
+        cursor: pointer;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="display">ลองพูดอะไรดูสิ!</h1>
+    </div>
+
+    <div class="error" onclick="hideError()"></div>
+
+    <div class="frame-container"></div>
+
+    <script>
+      let textDisplay = document.querySelector('.display')
+      let errorDisplay = document.querySelector('.error')
+      let container = document.querySelector('.container')
+      let frameContainer = document.querySelector('.frame-container')
+
+      const sl = new webkitSpeechRecognition()
+      sl.lang = 'th-TH'
+
+      const bgColor = color => {
+        container.style.background = color
+        textDisplay.style.color = 'white'
+      }
+
+      const PBoAvatar = `https://scontent.fbkk5-6.fna.fbcdn.net/v/t1.0-9/44073583_10155937461019103_8107487220652310528_n.jpg?_nc_cat=102&_nc_eui2=AeE79JtbpG6HZVD5YGPdSOtXgXdxSY0Rb4zDiuYbR0otGY8AFGMaNxxGaTZSvlsO93F0Bk4EMVRKmR7U7Tjr4HC5ti9u2ksAI08tiUDjryPXNQ&_nc_oc=AQmiJagh-MmVsBddMcRzA7m1eyQcz7jUsxsHM2nY3qs0kMh7Syp0jWCFpI3HnQw3TMw&_nc_ht=scontent.fbkk5-6.fna&oh=1219ad6c54ef2bb549dcac843f66a595&oe=5DE513DE`
+
+      let currentTTS = false
+
+      function showError(text) {
+        errorDisplay.textContent = text
+        errorDisplay.style.display = 'flex'
+      }
+
+      function hideError(text) {
+        errorDisplay.textContent = ''
+        errorDisplay.style.display = 'none'
+      }
+
+      function playMusic(id) {
+        frameContainer = document.querySelector('.frame-container')
+        frameContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+      }
+
+      function stopVideo() {
+        frameContainer = document.querySelector('.frame-container')
+        frameContainer.innerHTML = ''
+      }
+
+      function speak(text) {
+        if (currentTTS) {
+          console.warn('TTS In Session:', currentTTS)
+        }
+
+        const Kanya = speechSynthesis
+          .getVoices()
+          .find(x => x.voiceURI === 'Kanya')
+
+        const sid = Math.random().toString(36)
+
+        const u = new SpeechSynthesisUtterance(text)
+        u.voice = Kanya
+        u.lang = 'th-TH'
+        u.volume = 1 // 0 - 1
+        u.pitch = 1 // 0 - 2
+        u.rate = 1 // 0 - 10
+
+        u.onboundary = console.log
+
+        u.onerror = e => {
+          console.error('TTS Error:', e)
+
+          if (e.error === 'not-allowed') {
+            return showError('Please click here to enable TTS.')
+          }
+
+          showError('TTS Error')
+        }
+
+        u.onmark = console.log
+
+        u.onstart = e => {
+          console.log('TTS Start:', e)
+
+          currentTTS = sid
+        }
+
+        u.onend = e => {
+          console.log('TTS End:', e)
+
+          if (currentTTS !== sid) return
+
+          currentTTS = false
+        }
+
+        speechSynthesis.speak(u)
+
+        return u
+      }
+
+      const colorMap = {
+        แดง: 'red',
+        เหลือง: 'blue',
+        ม่วง: 'purple',
+        คราม: 'purple',
+        แสด: 'orange',
+        เขียว: 'green',
+        ฟ้า: 'lightblue',
+        น้ำเงิน: 'blue',
+        ส้ม: 'orange',
+        เทา: 'grey',
+        ชมพู: 'pink',
+        ดำ: '#2d2d30',
+        รัก: `url(${PBoAvatar}) center center`
+      }
+
+      sl.onresult = e => {
+        textDisplay = document.querySelector('.display')
+
+        const text = e.results[0][0].transcript
+        textDisplay.innerHTML = text
+
+        if (text.includes('ทะเล')) {
+          playMusic('pnxFIYwGTPU')
+        } else if (text.includes('โอ')) {
+          playMusic('vIgghnnE5Lg')
+          bgColor('linear-gradient(45deg, #fb872b, #d9e021)')
+
+          setTimeout(() => {
+            textDisplay.innerHTML = 'สุขสันต์วันเกิด'
+          }, 1500)
+
+          return
+        } else {
+          stopVideo()
+        }
+
+        if (text.includes('สวัสดี')) {
+          return speak('สวัสดีค่ะ')
+        }
+
+        for (let thaiColor in colorMap) {
+          if (text.includes(thaiColor)) {
+            return bgColor(colorMap[thaiColor])
+          }
+        }
+
+        container.style.background = 'white'
+        textDisplay.style.color = '#2d2d30'
+      }
+
+      function listen() {
+        if (currentTTS) {
+          console.warn('TTS in Action.')
+
+          setTimeout(() => {
+            listen()
+          }, 1500)
+
+          return
+        }
+
+        sl.start()
+      }
+
+      sl.onend = () => {
+        console.log('END')
+
+        listen()
+      }
+
+      sl.start()
+    </script>
+  </body>
+</html>
