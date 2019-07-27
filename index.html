@@ -96,9 +96,29 @@
         errorDisplay.style.display = 'none'
       }
 
-      function playMusic(id) {
+      function playVideo(id) {
         frameContainer = document.querySelector('.frame-container')
-        frameContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+        frameContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${id}?autoplay=1&showinfo=0&controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+      }
+
+      function focusVideo() {
+        const iframe = document.querySelector('.frame-container iframe')
+        if (!iframe) return
+
+        iframe.width = '100%'
+        iframe.height = '100%'
+        iframe.style.position = 'absolute'
+        iframe.style.left = '0'
+        iframe.style.top = '0'
+      }
+
+      function unfocusVideo() {
+        const iframe = document.querySelector('.frame-container iframe')
+        if (!iframe) return
+
+        iframe.width = '1px'
+        iframe.height = '1px'
+        iframe.style.position = 'block'
       }
 
       function stopVideo() {
@@ -173,12 +193,16 @@
         const text = e.results[0][0].transcript
         console.info('💬:', text)
 
+        if (text.includes('ดูวีดีโอ')) return focusVideo()
+        if (text.includes('ซ่อนวีดีโอ')) return unfocusVideo()
+        if (text.includes('วิดีโอ')) return
+
         textDisplay.innerHTML = text
 
         if (text.includes('ทะเล')) {
-          playMusic('pnxFIYwGTPU')
+          playVideo('pnxFIYwGTPU')
         } else if (text.includes('โอ')) {
-          playMusic('vIgghnnE5Lg')
+          playVideo('vIgghnnE5Lg')
           bgColor('linear-gradient(45deg, #fb872b, #d9e021)')
 
           setTimeout(() => {
