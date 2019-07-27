@@ -124,29 +124,23 @@
         u.pitch = 1 // 0 - 2
         u.rate = 1 // 0 - 10
 
-        u.onboundary = console.log
-
         u.onerror = e => {
           console.error('TTS Error:', e)
 
           if (e.error === 'not-allowed') {
-            return showError('Please click here to enable TTS.')
+            return showError('คลิกที่นี่เพื่อเปิดใช้ TTS')
           }
 
           showError('TTS Error')
         }
 
-        u.onmark = console.log
-
         u.onstart = e => {
-          console.log('TTS Start:', e)
-
           currentTTS = sid
+
+          console.info('🖥:', text)
         }
 
         u.onend = e => {
-          console.log('TTS End:', e)
-
           if (currentTTS !== sid) return
 
           currentTTS = false
@@ -177,6 +171,8 @@
         textDisplay = document.querySelector('.display')
 
         const text = e.results[0][0].transcript
+        console.info('💬:', text)
+
         textDisplay.innerHTML = text
 
         if (text.includes('ทะเล')) {
@@ -214,21 +210,19 @@
 
           setTimeout(() => {
             listen()
-          }, 1500)
+          }, 3000)
 
           return
         }
 
+        console.log('👂: ฟังอยู่')
+
         sl.start()
       }
 
-      sl.onend = () => {
-        console.log('END')
+      sl.onend = () => listen()
 
-        listen()
-      }
-
-      sl.start()
+      listen()
     </script>
   </body>
 </html>
