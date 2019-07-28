@@ -85,9 +85,66 @@
         opacity: 0;
       }
 
-      .visible {
+      .listen-indicator .visible {
         animation: blink 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0s infinite
           alternate;
+      }
+
+      .ncpo {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        opacity: 0;
+        background: white;
+
+        transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
+      }
+
+      .ncpo div {
+        width: 100%;
+        height: 100%;
+      }
+
+      .ncpo div:nth-child(1) {
+        background: #f70300;
+      }
+
+      .ncpo div:nth-child(2) {
+        background: #01007d;
+      }
+
+      .ncpo div:nth-child(3) {
+        background: #00c6f7;
+      }
+
+      .ncpo div:nth-child(4) {
+        background: #953100;
+      }
+
+      .ncpo h1 {
+        color: white;
+        font-family: 'Sukhumvit Set';
+        font-size: 570px;
+        position: fixed;
+        bottom: -240px;
+        line-height: 10px;
+
+        text-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .ncpo.visible {
+        opacity: 1;
       }
     </style>
   </head>
@@ -101,6 +158,14 @@
     <div class="error" onclick="hideError()"></div>
 
     <div class="frame-container"></div>
+
+    <div class="ncpo">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <h1>คสช.</h1>
+    </div>
 
     <script>
       var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
@@ -139,7 +204,7 @@
       let listenIndicator = document.querySelector('.listen-indicator')
 
       let _state = {
-        isRisky: false,
+        isRisky: true,
         stopwatch: 0,
         stopwatchTimer: null,
         isListening: true
@@ -354,6 +419,15 @@
 
         if (text.includes('สวัสดี')) {
           return speak('สวัสดีค่ะ')
+        }
+
+        if (state.isRisky && text.includes('คสช')) {
+          const ncpo = document.querySelector('.ncpo')
+          ncpo.classList.add('visible')
+          speak('คณะรักษาความสงบแห่งชาติ')
+          playVideo('xLYSBVmoPhY')
+
+          return
         }
 
         if (state.isRisky && text.includes('ประยุทธ์')) {
