@@ -124,11 +124,10 @@
         height: 100%;
         min-height: 100vh;
 
-        display: flex;
+        display: none;
         align-items: center;
         justify-content: center;
 
-        opacity: 0;
         background: white;
 
         transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
@@ -137,6 +136,7 @@
       .ncpo div {
         width: 100%;
         height: 100%;
+        pointer-events: none;
       }
 
       .ncpo div:nth-child(1) {
@@ -167,7 +167,7 @@
       }
 
       .ncpo.visible {
-        opacity: 1;
+        display: flex;
       }
     </style>
   </head>
@@ -453,7 +453,9 @@
         if (text.includes('จับเวลา')) return startWatch()
 
         if (text.includes('สวัสดี')) {
-          return speak('สวัสดีค่ะ')
+          speak('สวัสดีค่ะ')
+          setText('สวัสดีค่ะ 🙌🏻')
+          return
         }
 
         if (state.isRisky && text.includes('คสช')) {
