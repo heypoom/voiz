@@ -219,29 +219,18 @@
         clearInterval(stopwatchTimer)
       }
 
-      function toMMSS(num) {
-        let sec_num = parseInt(num, 10)
-        let hours = Math.floor(sec_num / 3600)
-        let minutes = Math.floor((sec_num - hours * 3600) / 60)
-        let seconds = sec_num - hours * 3600 - minutes * 60
+      function toMMSS(sec) {
+        sec = Number(sec)
 
-        if (hours < 10) {
-          hours = '0' + hours
-        }
-        if (minutes < 10) {
-          minutes = '0' + minutes
-        }
-        if (seconds < 10) {
-          seconds = '0' + seconds
-        }
+        const hours = Math.floor(sec / 3600)
+        const minutes = Math.floor((sec % 3600) / 60)
+        const seconds = Math.floor(sec % 60)
 
-        return minutes + ':' + seconds
+        return pad(minutes) + ':' + pad(seconds)
       }
 
       function run(text) {
         console.info('💬:', text)
-
-        transcripts.push(text)
 
         if (text.includes('*')) {
           setColor('red')
@@ -257,7 +246,6 @@
         }
 
         if (text.includes('หยุดฟัง')) {
-          sl.stop()
           isListening = false
 
           return
@@ -356,11 +344,12 @@
         textDisplay = document.querySelector('.display')
 
         const text = e.results[0][0].transcript
-        run(text)
+        transcripts.push(text)
+
+        if (isListening) run(text)
       }
 
       function listen() {
-        if (!isListening) return
         if (currentTTS) return
 
         console.log('👂: ฟังอยู่')
