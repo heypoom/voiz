@@ -418,6 +418,10 @@
         startWatch()
       }
 
+      window.onunload = () => {
+        saveState()
+      }
+
       // Auto-save
       setInterval(saveState, 5000)
     </script>
