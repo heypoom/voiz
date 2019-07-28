@@ -75,6 +75,8 @@
     <div class="frame-container"></div>
 
     <script>
+      const pad = n => (n < 10 ? '0' + n : n)
+
       let textDisplay = document.querySelector('.display')
       let errorDisplay = document.querySelector('.error')
       let container = document.querySelector('.container')
@@ -264,8 +266,6 @@
         if (text.includes('สวัสดี')) {
           return speak('สวัสดีค่ะ')
         }
-
-        const pad = n => (n < 10 ? '0' + n : n)
 
         if (text.includes('กี่โมง')) {
           const d = new Date()
