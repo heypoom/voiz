@@ -589,7 +589,11 @@
         const text = e.results[0][0].transcript
         transcripts.push(text)
 
-        if (state.isListening) run(text)
+        if (state.isListening) {
+          speechInput.value = text
+
+          run(text)
+        }
       }
 
       function listen() {
