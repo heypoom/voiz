@@ -494,6 +494,14 @@
           return
         }
 
+        if (text.includes('คำถาม')) {
+          playVideo('kNRMhrqBImg')
+          setColor('lightblue', '#2d2d30')
+          setText('คำถาม 💬')
+
+          return
+        }
+
         if (text.includes('สุ่ม')) {
           const rand = () => Math.floor(Math.random() * 21)
           const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
