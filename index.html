@@ -242,6 +242,10 @@
 
       function stopWatch() {
         clearInterval(state.stopwatchTimer)
+
+        delete state.stopwatch
+        delete state.stopwatchTimer
+        saveState()
       }
 
       function toMMSS(sec) {
@@ -254,7 +258,7 @@
         return pad(minutes) + ':' + pad(seconds)
       }
 
-      function run(text) {
+      async function run(text) {
         console.info('💬:', text)
 
         if (text.includes('*')) {
@@ -288,6 +292,15 @@
 
         if (text.includes('สวัสดี')) {
           return speak('สวัสดีค่ะ')
+        }
+
+        if (text.includes('ประยุทธ์')) {
+          speak('ประยุทธ์พ่อมึงสิ')
+          setText('ประยุทธ์พ่อมึงสิ')
+          setColor('green')
+          playVideo('xLYSBVmoPhY')
+
+          return
         }
 
         if (text.includes('กี่โมง')) {
@@ -337,6 +350,7 @@
           setColor('linear-gradient(45deg, #fb872b, #d9e021)')
 
           setTimeout(() => {
+            speak('ทรงพระเจริญ')
             setText('สุขสันต์วันเกิด')
           }, 1500)
 
