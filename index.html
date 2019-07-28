@@ -437,6 +437,19 @@
         return pad(minutes) + ':' + pad(seconds)
       }
 
+      async function superRandom(max, perm = 50) {
+        const rand = () => Math.floor(Math.random() * max)
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+        for (let i = 0; i < perm; i++) {
+          await delay(perm)
+
+          setText(rand())
+        }
+
+        setText(rand())
+      }
+
       async function run(text) {
         console.info('💬:', text)
 
@@ -502,17 +515,16 @@
           return
         }
 
+        const randRegex = /สุ่ม (\d+)/
+
+        if (randRegex.test(text)) {
+          const [_, numStr] = randRegex.exec(text)
+
+          return superRandom(Number(numStr))
+        }
+
         if (text.includes('สุ่ม')) {
-          const rand = () => Math.floor(Math.random() * 21)
-          const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-          for (let i = 0; i < 50; i++) {
-            await delay(50)
-
-            setText(rand())
-          }
-
-          setText(rand())
+          return superRandom()
         }
 
         if (text.includes('ป้อม')) {
