@@ -75,6 +75,29 @@
         }
       }
 
+      .speech-input {
+        position: absolute;
+        bottom: 1em;
+        left: 50%;
+        z-index: 2;
+        transform: translateX(-50%);
+
+        outline: none;
+        border: 1px solid lightgrey;
+        border-radius: 10em;
+
+        text-align: center;
+        font-family: 'Sukhumvit Set', 'Helvetica Neue';
+        font-size: 1.8em;
+        color: #555;
+      }
+
+      .speech-input:hover,
+      .speech-input:focus {
+        border: 1px solid lightblue;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+
       .listen-indicator {
         position: absolute;
         font-size: 3em;
@@ -159,6 +182,10 @@
 
     <div class="frame-container"></div>
 
+    <div class="input-container">
+      <input type="text" class="speech-input" />
+    </div>
+
     <div class="ncpo">
       <div></div>
       <div></div>
@@ -202,6 +229,14 @@
       let container = document.querySelector('.container')
       let frameContainer = document.querySelector('.frame-container')
       let listenIndicator = document.querySelector('.listen-indicator')
+      let speechInput = document.querySelector('.speech-input')
+
+      speechInput.onkeypress = e => {
+        if (e.key === 'Enter') {
+          run(speechInput.value)
+          speechInput.value = ''
+        }
+      }
 
       let _state = {
         isRisky: true,
