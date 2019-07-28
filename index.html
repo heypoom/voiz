@@ -301,6 +301,8 @@
       }
 
       function hideError(text) {
+        ttsDisabledIndicator.classList.remove('visible')
+
         errorDisplay.textContent = ''
         errorDisplay.style.display = 'none'
       }
@@ -384,6 +386,8 @@
         return u
       }
 
+      const say = speak
+
       const colorMap = {
         แดง: 'red',
         เหลือง: 'yellow',
@@ -442,6 +446,7 @@
 
           if (state.isRisky) {
             setTimeout(() => {
+              speak('หยาบคาย อีดอก')
               setText('หยาบคาย อิดอก')
             }, 1500)
           }
