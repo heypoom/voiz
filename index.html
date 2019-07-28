@@ -35,6 +35,12 @@
         transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
       }
 
+      .love-text {
+        position: absolute;
+        bottom: 10%;
+        font-size: 5em;
+      }
+
       .error {
         position: absolute;
         left: 0;
@@ -73,6 +79,8 @@
       let errorDisplay = document.querySelector('.error')
       let container = document.querySelector('.container')
       let frameContainer = document.querySelector('.frame-container')
+
+      const transcripts = []
 
       let isRisky = true
 
@@ -202,6 +210,20 @@
         const text = e.results[0][0].transcript
         console.info('💬:', text)
 
+        transcripts.push(text)
+
+        if (text.includes('*')) {
+          setColor('red')
+
+          setText(text)
+
+          setTimeout(() => {
+            setText('หยาบคาย อิดอก')
+          }, 1500)
+
+          return
+        }
+
         if (text.includes('ไม่เสี่ยงคุก')) return setRisky(false)
         if (text.includes('เสี่ยงคุก')) return setRisky(true)
 
@@ -226,7 +248,34 @@
           return
         }
 
+        if (text.includes('นอน')) {
+          playVideo('JWFo16MT_zA')
+          setText(text)
+          return
+        }
+
+        if (text.includes('พนัน')) {
+          playVideo('NOnL4VUezxQ')
+          setText(text)
+
+          setTimeout(() => {
+            setText('TSOver.com ฝากถอน โอนไว')
+          }, 1500)
+
+          return
+        }
+
         setText(text)
+
+        if (text.includes('รัก')) {
+          speak('รักนะคะคนดี')
+          setColor(`url(${PBoAvatar}) no-repeat center`, 'white')
+          textDisplay.classList.add('love-text')
+
+          return
+        } else {
+          textDisplay.classList.remove('love-text')
+        }
 
         if (text.includes('ทะเล')) {
           playVideo('pnxFIYwGTPU')
