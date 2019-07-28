@@ -64,12 +64,39 @@
         cursor: pointer;
         text-align: center;
       }
+
+      @keyframes blink {
+        0% {
+          opacity: 0;
+        }
+
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .listen-indicator {
+        position: absolute;
+        font-size: 3em;
+
+        top: 15px;
+        right: 25px;
+
+        opacity: 0;
+      }
+
+      .visible {
+        animation: blink 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0s infinite
+          alternate;
+      }
     </style>
   </head>
   <body>
     <div class="container" onclick="handleClick()">
       <h1 class="display">ลองพูดอะไรดูสิ!</h1>
     </div>
+
+    <div class="listen-indicator">👂</div>
 
     <div class="error" onclick="hideError()"></div>
 
@@ -81,26 +108,61 @@
       var SpeechRecognitionEvent =
         SpeechRecognitionEvent || webkitSpeechRecognitionEvent
 
+      const observe = (object, onChange) => {
+        const handler = {
+          get(target, property, receiver) {
+            try {
+              return new Proxy(target[property], handler)
+            } catch (err) {
+              return Reflect.get(target, property, receiver)
+            }
+          },
+          defineProperty(target, property, descriptor) {
+            onChange()
+            return Reflect.defineProperty(target, property, descriptor)
+          },
+          deleteProperty(target, property) {
+            onChange()
+            return Reflect.deleteProperty(target, property)
+          }
+        }
+
+        return new Proxy(object, handler)
+      }
+
       const pad = n => (n < 10 ? '0' + n : n)
 
       let textDisplay = document.querySelector('.display')
       let errorDisplay = document.querySelector('.error')
       let container = document.querySelector('.container')
       let frameContainer = document.querySelector('.frame-container')
+      let listenIndicator = document.querySelector('.listen-indicator')
 
-      let state = {
+      let _state = {
         isRisky: false,
         stopwatch: 0,
         stopwatchTimer: null,
         isListening: true
       }
 
+      const setListening = s => {
+        state.isListening = s
+
+        if (s) {
+          listenIndicator.classList.add('visible')
+        } else {
+          listenIndicator.classList.remove('visible')
+        }
+      }
+
+      let state = observe(_state, () => {})
+
       function saveState() {
         localStorage.setItem('state', JSON.stringify(state))
       }
 
       function loadState() {
-        state = JSON.parse(localStorage.getItem('state'))
+        _state = JSON.parse(localStorage.getItem('state'))
 
         return state
       }
@@ -275,13 +337,13 @@
         }
 
         if (text.includes('หยุดฟัง')) {
-          state.isListening = false
+          setListening(false)
 
           return
         }
 
-        if (text.includes('ไม่เสี่ยงคุก')) return setRisky(false)
-        if (text.includes('เสี่ยงคุก')) return setRisky(true)
+        if (text.includes('ไม่เสี่ยง')) return setRisky(false)
+        if (text.includes('เสี่ยง')) return setRisky(true)
 
         if (text.includes('ดูวีดีโอ')) return focusVideo()
         if (text.includes('ซ่อนวีดีโอ')) return unfocusVideo()
@@ -294,11 +356,33 @@
           return speak('สวัสดีค่ะ')
         }
 
-        if (text.includes('ประยุทธ์')) {
+        if (state.isRisky && text.includes('ประยุทธ์')) {
           speak('ประยุทธ์พ่อมึงสิ')
           setText('ประยุทธ์พ่อมึงสิ')
           setColor('green')
           playVideo('xLYSBVmoPhY')
+
+          return
+        }
+
+        if (text.includes('สุ่ม')) {
+          const rand = () => Math.floor(Math.random() * 21)
+          const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+          for (let i = 0; i < 50; i++) {
+            await delay(50)
+
+            setText(rand())
+          }
+
+          setText(rand())
+        }
+
+        if (text.includes('ป้อม')) {
+          speak('นาฬิกาอยู่ไหน')
+          setText('นาฬิกาอยู่ไหน')
+          setColor('green')
+          playVideo('5msNXQBkd1s')
 
           return
         }
@@ -381,6 +465,7 @@
         if (currentSpeech) return
 
         currentSpeech = true
+        setListening(true)
 
         console.log('👂: ฟังอยู่')
       }
@@ -412,11 +497,13 @@
       sl.onend = () => {
         currentSpeech = false
 
+        setListening(false)
+
         listen()
       }
 
       function handleClick() {
-        isListening = true
+        setListening(false)
 
         sl.stop()
         listen()
