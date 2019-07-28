@@ -98,17 +98,24 @@
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       }
 
-      .listen-indicator {
+      .indicator {
         position: absolute;
         font-size: 3em;
 
         top: 15px;
-        right: 25px;
 
         opacity: 0;
       }
 
-      .listen-indicator.visible {
+      .indicator.listen {
+        right: 25px;
+      }
+
+      .indicator.tts-disabled {
+        right: 90px;
+      }
+
+      .indicator.visible {
         animation: blink 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0s infinite
           alternate;
       }
@@ -176,7 +183,8 @@
       <h1 class="display">ลองพูดอะไรดูสิ!</h1>
     </div>
 
-    <div class="listen-indicator">👂</div>
+    <div class="listen indicator">👂</div>
+    <div class="tts-disabled indicator visible">🤐</div>
 
     <div class="error" onclick="hideError()"></div>
 
@@ -228,7 +236,12 @@
       let errorDisplay = document.querySelector('.error')
       let container = document.querySelector('.container')
       let frameContainer = document.querySelector('.frame-container')
-      let listenIndicator = document.querySelector('.listen-indicator')
+      let listenIndicator = document.querySelector('.listen.indicator')
+
+      let ttsDisabledIndicator = document.querySelector(
+        '.tts-disabled.indicator'
+      )
+
       let speechInput = document.querySelector('.speech-input')
 
       speechInput.onkeypress = e => {
@@ -618,6 +631,8 @@
       }
 
       function handleClick() {
+        ttsDisabledIndicator.classList.remove('visible')
+
         setListening(false)
 
         sl.stop()
