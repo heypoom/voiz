@@ -1,685 +1,708 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Voiz</title>
 
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        font-family: Sukhumvit Set, Helvetica Neue, sans-serif;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Voiz</title>
 
-      .display {
-        margin: 0;
-        font-size: 8em;
-        text-align: center;
-        color: #2d2d30;
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Sukhumvit Set, Helvetica Neue, sans-serif;
+    }
 
-        text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
-      }
+    .display {
+      margin: 0;
+      font-size: 8em;
+      text-align: center;
+      color: #2d2d30;
 
-      .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+      transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
+    }
 
-        min-height: 100vh;
-        padding: 1.8em;
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
 
-        cursor: pointer;
-        transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
-      }
+      min-height: 100vh;
+      padding: 1.8em;
 
-      .love-text {
-        position: absolute;
-        bottom: 10%;
-        font-size: 5em;
-      }
+      cursor: pointer;
+      transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
+    }
 
-      .error {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background: #fa8072ee;
-        transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
+    .love-text {
+      position: absolute;
+      bottom: 10%;
+      font-size: 5em;
+    }
 
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+    .error {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: #fa8072ee;
+      transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
 
-        min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
 
-        font-size: 5em;
-        color: white;
+      min-height: 100vh;
 
-        display: none;
-        cursor: pointer;
-        text-align: center;
-      }
+      font-size: 5em;
+      color: white;
 
-      @keyframes blink {
-        0% {
-          opacity: 0;
-        }
+      display: none;
+      cursor: pointer;
+      text-align: center;
+    }
 
-        100% {
-          opacity: 1;
-        }
-      }
-
-      .speech-input {
-        position: absolute;
-        bottom: 1em;
-        left: 50%;
-        z-index: 2;
-        transform: translateX(-50%);
-
-        outline: none;
-        border: 1px solid lightgrey;
-        border-radius: 10em;
-
-        text-align: center;
-        font-family: 'Sukhumvit Set', 'Helvetica Neue';
-        font-size: 1.8em;
-        color: #555;
-      }
-
-      .speech-input:hover,
-      .speech-input:focus {
-        border: 1px solid lightblue;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-      }
-
-      .indicator {
-        position: absolute;
-        font-size: 3em;
-
-        top: 15px;
-
+    @keyframes blink {
+      0% {
         opacity: 0;
       }
 
-      .indicator.listen {
-        right: 25px;
+      100% {
+        opacity: 1;
       }
+    }
 
-      .indicator.tts-disabled {
-        right: 90px;
-      }
+    .speech-input {
+      position: absolute;
+      bottom: 1em;
+      left: 50%;
+      z-index: 2;
+      transform: translateX(-50%);
 
-      .indicator.visible {
-        animation: blink 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0s infinite
-          alternate;
-      }
+      outline: none;
+      border: 1px solid lightgrey;
+      border-radius: 10em;
 
-      .ncpo {
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
+      text-align: center;
+      font-family: 'Sukhumvit Set', 'Helvetica Neue';
+      font-size: 1.8em;
+      color: #555;
+    }
 
-        width: 100%;
-        height: 100%;
-        min-height: 100vh;
+    .speech-input:hover,
+    .speech-input:focus {
+      border: 1px solid lightblue;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
 
-        display: none;
-        align-items: center;
-        justify-content: center;
+    .indicator {
+      position: absolute;
+      font-size: 3em;
 
-        background: white;
+      top: 15px;
 
-        transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
-      }
+      opacity: 0;
+      cursor: pointer;
+    }
 
-      .ncpo div {
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-      }
+    .indicator.listen {
+      right: 25px;
+    }
 
-      .ncpo div:nth-child(1) {
-        background: #f70300;
-      }
+    .indicator.tts-disabled {
+      right: 90px;
+    }
 
-      .ncpo div:nth-child(2) {
-        background: #01007d;
-      }
+    .indicator.visible {
+      animation: blink 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0s infinite alternate;
+    }
 
-      .ncpo div:nth-child(3) {
-        background: #00c6f7;
-      }
+    .ncpo {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
 
-      .ncpo div:nth-child(4) {
-        background: #953100;
-      }
+      width: 100%;
+      height: 100%;
+      min-height: 100vh;
 
-      .ncpo h1 {
-        color: white;
-        font-family: 'Sukhumvit Set';
-        font-size: 570px;
-        position: fixed;
-        bottom: -240px;
-        line-height: 10px;
+      display: none;
+      align-items: center;
+      justify-content: center;
 
-        text-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      }
+      background: white;
 
-      .ncpo.visible {
-        display: flex;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container" onclick="handleClick()">
-      <h1 class="display">ลองพูดอะไรดูสิ!</h1>
-    </div>
+      transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) all;
+    }
 
-    <div class="listen indicator">👂</div>
-    <div class="tts-disabled indicator visible">🤐</div>
+    .ncpo div {
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
 
-    <div class="error" onclick="hideError()"></div>
+    .ncpo div:nth-child(1) {
+      background: #f70300;
+    }
 
-    <div class="frame-container"></div>
+    .ncpo div:nth-child(2) {
+      background: #01007d;
+    }
 
-    <div class="input-container">
-      <input type="text" class="speech-input" />
-    </div>
+    .ncpo div:nth-child(3) {
+      background: #00c6f7;
+    }
 
-    <div class="ncpo">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <h1>คสช.</h1>
-    </div>
+    .ncpo div:nth-child(4) {
+      background: #953100;
+    }
 
-    <script>
-      var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
-      var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
-      var SpeechRecognitionEvent =
-        SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+    .ncpo h1 {
+      color: white;
+      font-family: 'Sukhumvit Set';
+      font-size: 570px;
+      position: fixed;
+      bottom: -240px;
+      line-height: 10px;
 
-      const observe = (object, onChange) => {
-        const handler = {
-          get(target, property, receiver) {
-            try {
-              return new Proxy(target[property], handler)
-            } catch (err) {
-              return Reflect.get(target, property, receiver)
-            }
-          },
-          defineProperty(target, property, descriptor) {
-            onChange()
-            return Reflect.defineProperty(target, property, descriptor)
-          },
-          deleteProperty(target, property) {
-            onChange()
-            return Reflect.deleteProperty(target, property)
+      text-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .ncpo.visible {
+      display: flex;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" onclick="handleClick()">
+    <h1 class="display">ลองพูดอะไรดูสิ!</h1>
+  </div>
+
+  <div class="listen indicator" onclick="pauseListening()">👂</div>
+  <div class="tts-disabled indicator visible">🤐</div>
+
+  <div class="error" onclick="hideError()"></div>
+
+  <div class="frame-container"></div>
+
+  <div class="input-container">
+    <input type="text" class="speech-input" />
+  </div>
+
+  <div class="ncpo">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <h1>คสช.</h1>
+  </div>
+
+  <script>
+    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+    var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
+    var SpeechRecognitionEvent =
+      SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+
+    const observe = (object, onChange) => {
+      const handler = {
+        get(target, property, receiver) {
+          try {
+            return new Proxy(target[property], handler)
+          } catch (err) {
+            return Reflect.get(target, property, receiver)
           }
-        }
-
-        return new Proxy(object, handler)
-      }
-
-      const pad = n => (n < 10 ? '0' + n : n)
-
-      let textDisplay = document.querySelector('.display')
-      let errorDisplay = document.querySelector('.error')
-      let container = document.querySelector('.container')
-      let frameContainer = document.querySelector('.frame-container')
-      let listenIndicator = document.querySelector('.listen.indicator')
-
-      let ttsDisabledIndicator = document.querySelector(
-        '.tts-disabled.indicator'
-      )
-
-      let speechInput = document.querySelector('.speech-input')
-
-      speechInput.onkeypress = e => {
-        if (e.key === 'Enter') {
-          run(speechInput.value)
-          speechInput.value = ''
+        },
+        defineProperty(target, property, descriptor) {
+          onChange()
+          return Reflect.defineProperty(target, property, descriptor)
+        },
+        deleteProperty(target, property) {
+          onChange()
+          return Reflect.deleteProperty(target, property)
         }
       }
 
-      let _state = {
-        isRisky: true,
-        stopwatch: 0,
-        stopwatchTimer: null,
-        isListening: true
+      return new Proxy(object, handler)
+    }
+
+    const pad = n => (n < 10 ? '0' + n : n)
+
+    let textDisplay = document.querySelector('.display')
+    let errorDisplay = document.querySelector('.error')
+    let container = document.querySelector('.container')
+    let frameContainer = document.querySelector('.frame-container')
+    let listenIndicator = document.querySelector('.listen.indicator')
+
+    let ttsDisabledIndicator = document.querySelector(
+      '.tts-disabled.indicator'
+    )
+
+    let speechInput = document.querySelector('.speech-input')
+
+    speechInput.onkeypress = e => {
+      if (e.key === 'Enter') {
+        run(speechInput.value)
+        speechInput.value = ''
+      }
+    }
+
+    let _state = {
+      isRisky: true,
+      stopwatch: 0,
+      stopwatchTimer: null,
+      isListening: true
+    }
+
+    const setListening = s => {
+      state.isListening = s
+
+      if (s) {
+        listenIndicator.classList.add('visible')
+      } else {
+        listenIndicator.classList.remove('visible')
+      }
+    }
+
+    function pauseListening() {
+      setListening(false)
+    }
+
+    let state = observe(_state, () => {})
+
+    function saveState() {
+      localStorage.setItem('state', JSON.stringify(state))
+    }
+
+    function loadState() {
+      _state = JSON.parse(localStorage.getItem('state'))
+
+      return state
+    }
+
+    const transcripts = []
+
+    const sl = new SpeechRecognition()
+    sl.lang = 'th-TH'
+
+    const setColor = (color, textColor = 'white') => {
+      container.style.background = color
+      textDisplay.style.color = textColor
+    }
+
+    const PBoAvatar =
+      `https://scontent.fbkk5-6.fna.fbcdn.net/v/t1.0-9/44073583_10155937461019103_8107487220652310528_n.jpg?_nc_cat=102&_nc_eui2=AeE79JtbpG6HZVD5YGPdSOtXgXdxSY0Rb4zDiuYbR0otGY8AFGMaNxxGaTZSvlsO93F0Bk4EMVRKmR7U7Tjr4HC5ti9u2ksAI08tiUDjryPXNQ&_nc_oc=AQmiJagh-MmVsBddMcRzA7m1eyQcz7jUsxsHM2nY3qs0kMh7Syp0jWCFpI3HnQw3TMw&_nc_ht=scontent.fbkk5-6.fna&oh=1219ad6c54ef2bb549dcac843f66a595&oe=5DE513DE`
+
+    const PrayuthAvatar =
+      `https://www.ft.com/__origami/service/image/v2/images/raw/https%3A%2F%2Fs3-ap-northeast-1.amazonaws.com%2Fpsh-ex-ftnikkei-3937bb4%2Fimages%2F6%2F5%2F8%2F6%2F21136856-5-eng-GB%2F%E6%9C%AA%E5%87%A6%E7%90%86%EF%BC%91%EF%BC%89%E3%82%BF%E3%82%A4%E9%A6%96%E7%9B%B8%E3%81%AB%E9%81%B8%E5%87%BA%E3%81%95%E3%82%8C%E3%81%9F%E3%83%97%E3%83%A9%E3%83%A6%E3%83%83%E3%83%88%E6%B0%8F20190607122223_Data%20%E3%81%AE%E3%82%B3%E3%83%94%E3%83%BC.jpg?source=nar-cms`
+
+    let currentTTS = false
+    let currentSpeech = null
+
+    function showError(text) {
+      errorDisplay.textContent = text
+      errorDisplay.style.display = 'flex'
+    }
+
+    function hideError(text) {
+      ttsDisabledIndicator.classList.remove('visible')
+
+      errorDisplay.textContent = ''
+      errorDisplay.style.display = 'none'
+    }
+
+    function playVideo(id) {
+      frameContainer = document.querySelector('.frame-container')
+      frameContainer.innerHTML =
+        `<iframe width="1" height="1" src="https://www.youtube.com/embed/${id}?autoplay=1&showinfo=0&controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+    }
+
+    function focusVideo() {
+      const iframe = document.querySelector('.frame-container iframe')
+      if (!iframe) return
+
+      iframe.width = '100%'
+      iframe.height = '100%'
+      iframe.style.position = 'absolute'
+      iframe.style.left = '0'
+      iframe.style.top = '0'
+    }
+
+    function unfocusVideo() {
+      const iframe = document.querySelector('.frame-container iframe')
+      if (!iframe) return
+
+      iframe.width = '1px'
+      iframe.height = '1px'
+      iframe.style.position = 'block'
+    }
+
+    function stopVideo() {
+      frameContainer = document.querySelector('.frame-container')
+      frameContainer.innerHTML = ''
+    }
+
+    function speak(text) {
+      if (currentTTS) {
+        console.warn('TTS In Session:', currentTTS)
       }
 
-      const setListening = s => {
-        state.isListening = s
+      const Kanya = speechSynthesis
+        .getVoices()
+        .find(x => x.voiceURI === 'Kanya')
 
-        if (s) {
-          listenIndicator.classList.add('visible')
-        } else {
-          listenIndicator.classList.remove('visible')
+      const sid = Math.random().toString(36)
+
+      const u = new SpeechSynthesisUtterance(text)
+      u.voice = Kanya
+      u.lang = 'th-TH'
+      u.volume = 1 // 0 - 1
+      u.pitch = 1 // 0 - 2
+      u.rate = 1 // 0 - 10
+
+      u.onerror = e => {
+        console.error('TTS Error:', e)
+
+        if (e.error === 'not-allowed') {
+          return showError('คลิกที่นี่เพื่อเปิดใช้ TTS')
         }
+
+        showError('TTS Error')
       }
 
-      let state = observe(_state, () => {})
+      u.onstart = e => {
+        sl.stop()
 
-      function saveState() {
-        localStorage.setItem('state', JSON.stringify(state))
+        currentTTS = sid
+
+        console.info('🖥:', text)
       }
 
-      function loadState() {
-        _state = JSON.parse(localStorage.getItem('state'))
+      u.onend = e => {
+        if (currentTTS !== sid) return
 
-        return state
+        currentTTS = false
+
+        listen()
       }
 
-      const transcripts = []
+      speechSynthesis.speak(u)
 
-      const sl = new SpeechRecognition()
-      sl.lang = 'th-TH'
+      return u
+    }
 
-      const setColor = (color, textColor = 'white') => {
-        container.style.background = color
-        textDisplay.style.color = textColor
-      }
+    const say = speak
 
-      const PBoAvatar = `https://scontent.fbkk5-6.fna.fbcdn.net/v/t1.0-9/44073583_10155937461019103_8107487220652310528_n.jpg?_nc_cat=102&_nc_eui2=AeE79JtbpG6HZVD5YGPdSOtXgXdxSY0Rb4zDiuYbR0otGY8AFGMaNxxGaTZSvlsO93F0Bk4EMVRKmR7U7Tjr4HC5ti9u2ksAI08tiUDjryPXNQ&_nc_oc=AQmiJagh-MmVsBddMcRzA7m1eyQcz7jUsxsHM2nY3qs0kMh7Syp0jWCFpI3HnQw3TMw&_nc_ht=scontent.fbkk5-6.fna&oh=1219ad6c54ef2bb549dcac843f66a595&oe=5DE513DE`
+    const colorMap = {
+      แดง: 'red',
+      เหลือง: 'yellow',
+      'ม่วง': 'purple',
+      คราม: 'purple',
+      แสด: 'orange',
+      เขียว: 'green',
+      'ฟ้า': 'lightblue',
+      'น้ำเงิน': 'blue',
+      'ส้ม': 'orange',
+      เทา: 'grey',
+      ชมพู: 'pink',
+      ดำ: '#2d2d30',
+      'รัก': `url(${PrayuthAvatar}) no-repeat center`
+    }
 
-      let currentTTS = false
-      let currentSpeech = null
+    const setRisky = s => {
+      state.isRisky = s
+    }
 
-      function showError(text) {
-        errorDisplay.textContent = text
-        errorDisplay.style.display = 'flex'
-      }
+    const setText = text => {
+      textDisplay.innerHTML = text
+    }
 
-      function hideError(text) {
-        ttsDisabledIndicator.classList.remove('visible')
+    function startWatch() {
+      state.stopwatchTimer = setInterval(() => {
+        state.stopwatch++
+        setText(toMMSS(state.stopwatch))
+      }, 1000)
+    }
 
-        errorDisplay.textContent = ''
-        errorDisplay.style.display = 'none'
-      }
+    function stopWatch() {
+      clearInterval(state.stopwatchTimer)
 
-      function playVideo(id) {
-        frameContainer = document.querySelector('.frame-container')
-        frameContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${id}?autoplay=1&showinfo=0&controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
-      }
+      delete state.stopwatch
+      delete state.stopwatchTimer
+      saveState()
+    }
 
-      function focusVideo() {
-        const iframe = document.querySelector('.frame-container iframe')
-        if (!iframe) return
+    function toMMSS(sec) {
+      sec = Number(sec)
 
-        iframe.width = '100%'
-        iframe.height = '100%'
-        iframe.style.position = 'absolute'
-        iframe.style.left = '0'
-        iframe.style.top = '0'
-      }
+      const hours = Math.floor(sec / 3600)
+      const minutes = Math.floor((sec % 3600) / 60)
+      const seconds = Math.floor(sec % 60)
 
-      function unfocusVideo() {
-        const iframe = document.querySelector('.frame-container iframe')
-        if (!iframe) return
+      return pad(minutes) + ':' + pad(seconds)
+    }
 
-        iframe.width = '1px'
-        iframe.height = '1px'
-        iframe.style.position = 'block'
-      }
+    async function superRandom(max, perm = 50) {
+      const rand = () => Math.floor(Math.random() * max)
+      const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-      function stopVideo() {
-        frameContainer = document.querySelector('.frame-container')
-        frameContainer.innerHTML = ''
-      }
-
-      function speak(text) {
-        if (currentTTS) {
-          console.warn('TTS In Session:', currentTTS)
-        }
-
-        const Kanya = speechSynthesis
-          .getVoices()
-          .find(x => x.voiceURI === 'Kanya')
-
-        const sid = Math.random().toString(36)
-
-        const u = new SpeechSynthesisUtterance(text)
-        u.voice = Kanya
-        u.lang = 'th-TH'
-        u.volume = 1 // 0 - 1
-        u.pitch = 1 // 0 - 2
-        u.rate = 1 // 0 - 10
-
-        u.onerror = e => {
-          console.error('TTS Error:', e)
-
-          if (e.error === 'not-allowed') {
-            return showError('คลิกที่นี่เพื่อเปิดใช้ TTS')
-          }
-
-          showError('TTS Error')
-        }
-
-        u.onstart = e => {
-          sl.stop()
-
-          currentTTS = sid
-
-          console.info('🖥:', text)
-        }
-
-        u.onend = e => {
-          if (currentTTS !== sid) return
-
-          currentTTS = false
-
-          listen()
-        }
-
-        speechSynthesis.speak(u)
-
-        return u
-      }
-
-      const say = speak
-
-      const colorMap = {
-        แดง: 'red',
-        เหลือง: 'yellow',
-        ม่วง: 'purple',
-        คราม: 'purple',
-        แสด: 'orange',
-        เขียว: 'green',
-        ฟ้า: 'lightblue',
-        น้ำเงิน: 'blue',
-        ส้ม: 'orange',
-        เทา: 'grey',
-        ชมพู: 'pink',
-        ดำ: '#2d2d30',
-        รัก: `url(${PBoAvatar}) no-repeat center`
-      }
-
-      const setRisky = s => {
-        state.isRisky = s
-      }
-
-      const setText = text => {
-        textDisplay.innerHTML = text
-      }
-
-      function startWatch() {
-        state.stopwatchTimer = setInterval(() => {
-          state.stopwatch++
-          setText(toMMSS(state.stopwatch))
-        }, 1000)
-      }
-
-      function stopWatch() {
-        clearInterval(state.stopwatchTimer)
-
-        delete state.stopwatch
-        delete state.stopwatchTimer
-        saveState()
-      }
-
-      function toMMSS(sec) {
-        sec = Number(sec)
-
-        const hours = Math.floor(sec / 3600)
-        const minutes = Math.floor((sec % 3600) / 60)
-        const seconds = Math.floor(sec % 60)
-
-        return pad(minutes) + ':' + pad(seconds)
-      }
-
-      async function superRandom(max, perm = 50) {
-        const rand = () => Math.floor(Math.random() * max)
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-        for (let i = 0; i < perm; i++) {
-          await delay(perm)
-
-          setText(rand())
-        }
+      for (let i = 0; i < perm; i++) {
+        await delay(perm)
 
         setText(rand())
       }
 
-      async function run(text) {
-        console.info('💬:', text)
+      setText(rand())
+    }
 
-        if (text.includes('*')) {
-          setColor('red')
-          setText(text)
+    async function run(text) {
+      console.info('💬:', text)
 
-          if (state.isRisky) {
-            setTimeout(() => {
-              speak('หยาบคาย อีดอก')
-              setText('หยาบคาย อิดอก')
-            }, 1500)
-          }
-
-          return
-        }
-
-        if (text.includes('หยุดฟัง')) {
-          setListening(false)
-
-          return
-        }
-
-        if (text.includes('ไม่เสี่ยง')) return setRisky(false)
-        if (text.includes('เสี่ยง')) return setRisky(true)
-
-        if (text.includes('ดูวีดีโอ')) return focusVideo()
-        if (text.includes('ซ่อนวีดีโอ')) return unfocusVideo()
-        if (text.includes('วิดีโอ')) return
-
-        if (text.includes('หยุดเวลา')) return stopWatch()
-        if (text.includes('จับเวลา')) return startWatch()
-
-        if (text.includes('สวัสดี')) {
-          speak('สวัสดีค่ะ')
-          setText('สวัสดีค่ะ 🙌🏻')
-          return
-        }
-
-        if (state.isRisky && text.includes('คสช')) {
-          const ncpo = document.querySelector('.ncpo')
-          ncpo.classList.add('visible')
-          speak('คณะรักษาความสงบแห่งชาติ')
-          playVideo('xLYSBVmoPhY')
-
-          return
-        }
-
-        if (state.isRisky && text.includes('ประยุทธ์')) {
-          speak('ประยุทธ์พ่อมึงสิ')
-          setText('ประยุทธ์พ่อมึงสิ')
-          setColor('green')
-          playVideo('xLYSBVmoPhY')
-
-          return
-        }
-
-        if (text.includes('คำถาม')) {
-          playVideo('kNRMhrqBImg')
-          setColor('lightblue', '#2d2d30')
-          setText('คำถาม 💬')
-
-          return
-        }
-
-        const randRegex = /สุ่ม (\d+)/
-
-        if (randRegex.test(text)) {
-          const [_, numStr] = randRegex.exec(text)
-
-          return superRandom(Number(numStr))
-        }
-
-        if (text.includes('สุ่ม')) {
-          return superRandom()
-        }
-
-        if (text.includes('ป้อม')) {
-          speak('นาฬิกาอยู่ไหน')
-          setText('นาฬิกาอยู่ไหน')
-          setColor('green')
-          playVideo('5msNXQBkd1s')
-
-          return
-        }
-
-        if (text.includes('กี่โมง')) {
-          const d = new Date()
-          const h = d.getHours()
-          const m = d.getMinutes()
-
-          speak(`ขณะนี้เวลา ${h} นาฬิกา ${m} นาที`)
-          setText(`เวลา ${pad(h)}:${pad(m)}`)
-
-          return
-        }
-
-        if (text.includes('นอน')) {
-          playVideo('JWFo16MT_zA')
-          setText(text)
-          return
-        }
-
-        if (text.includes('พนัน')) {
-          playVideo('NOnL4VUezxQ')
-          setText(text)
-
-          setTimeout(() => {
-            setText('TSOver.com ฝากถอน โอนไว')
-          }, 1500)
-
-          return
-        }
-
+      if (text.includes('*')) {
+        setColor('red')
         setText(text)
 
-        if (text.includes('รัก')) {
-          speak('รักนะคะคนดี')
-          setColor(`url(${PBoAvatar}) no-repeat center`, 'white')
-          textDisplay.classList.add('love-text')
-
-          return
-        } else {
-          textDisplay.classList.remove('love-text')
-        }
-
-        if (text.includes('ทะเล')) {
-          playVideo('pnxFIYwGTPU')
-        } else if (state.isRisky && text.includes('โอ')) {
-          playVideo('vIgghnnE5Lg')
-          setColor('linear-gradient(45deg, #fb872b, #d9e021)')
-
+        if (state.isRisky) {
           setTimeout(() => {
-            speak('ทรงพระเจริญ')
-            setText('สุขสันต์วันเกิด')
+            speak('หยาบคาย อีดอก')
+            setText('หยาบคาย อิดอก')
           }, 1500)
-
-          return
-        } else {
-          stopVideo()
         }
 
-        const lightColors = ['yellow', 'lightblue']
+        return
+      }
 
-        for (let thaiColor in colorMap) {
-          if (text.includes(thaiColor)) {
-            const color = colorMap[thaiColor]
+      if (text.includes('หยุดฟัง')) {
+        setListening(false)
 
-            for (let c of lightColors) {
-              if (c === color) return setColor(color, '#2d2d30')
-            }
+        return
+      }
 
-            return setColor(color)
+      if (text.includes('ไม่เสี่ยง')) return setRisky(false)
+      if (text.includes('เสี่ยง')) return setRisky(true)
+
+      if (text.includes('ดูวีดีโอ')) return focusVideo()
+      if (text.includes('ซ่อนวีดีโอ')) return unfocusVideo()
+      if (text.includes('วิดีโอ')) return
+
+      if (text.includes('หยุดเวลา')) return stopWatch()
+      if (text.includes('จับเวลา')) return startWatch()
+
+      if (text.includes('สวัสดี')) {
+        speak('สวัสดีค่ะ')
+        setText('สวัสดีค่ะ 🙌🏻')
+        return
+      }
+
+      if (state.isRisky && text.includes('คสช')) {
+        const ncpo = document.querySelector('.ncpo')
+        ncpo.classList.add('visible')
+        speak('คณะรักษาความสงบแห่งชาติ')
+        playVideo('xLYSBVmoPhY')
+
+        return
+      }
+
+      if (state.isRisky && text.includes('ประยุทธ์')) {
+        speak('ประยุทธ์พ่อมึงสิ')
+        setText('ประยุทธ์พ่อมึงสิ')
+        setColor('green')
+        playVideo('xLYSBVmoPhY')
+
+        return
+      }
+
+      if (text.includes('คำถาม')) {
+        playVideo('kNRMhrqBImg')
+        setColor('lightblue', '#2d2d30')
+        setText('คำถาม 💬')
+
+        return
+      }
+
+      const randRegex = /สุ่ม (\d+)/
+
+      if (randRegex.test(text)) {
+        const [_, numStr] = randRegex.exec(text)
+
+        return superRandom(Number(numStr))
+      }
+
+      if (text.includes('สุ่ม')) {
+        return superRandom()
+      }
+
+      if (text.includes('ป้อม')) {
+        speak('นาฬิกาอยู่ไหน')
+        setText('นาฬิกาอยู่ไหน')
+        setColor('green')
+        playVideo('5msNXQBkd1s')
+
+        return
+      }
+
+      if (text.includes('กี่โมง')) {
+        const d = new Date()
+        const h = d.getHours()
+        const m = d.getMinutes()
+
+        speak(`ขณะนี้เวลา ${h} นาฬิกา ${m} นาที`)
+        setText(`เวลา ${pad(h)}:${pad(m)}`)
+
+        return
+      }
+
+      if (text.includes('นอน')) {
+        playVideo('JWFo16MT_zA')
+        setText(text)
+        return
+      }
+
+      if (text.includes('พนัน')) {
+        playVideo('NOnL4VUezxQ')
+        setText(text)
+
+        setTimeout(() => {
+          setText('TSOver.com ฝากถอน โอนไว')
+        }, 1500)
+
+        return
+      }
+
+      setText(text)
+
+      if (text.includes('รัก')) {
+        speak('รักนะคะคนดี')
+        setColor(`url(${PrayuthAvatar}) no-repeat center`, 'white')
+        textDisplay.classList.add('love-text')
+
+        return
+      } else if (text.includes('ตั้ง')) {
+        speak('ใครเรียกตั้งครับ')
+        setText(text.replace('ตั้ง', '<b style="color: red; font-size: 1.5em">ตั้ง</b>'))
+        setColor(`url(https://ywc16.ywc.in.th/images/speaker/23.jpg) no-repeat center`, 'white')
+        textDisplay.classList.add('love-text')
+
+        return
+      } else {
+        textDisplay.classList.remove('love-text')
+      }
+
+      if (text.includes('ทะเล')) {
+        playVideo('pnxFIYwGTPU')
+      } else if (state.isRisky && text.includes('โอ')) {
+        playVideo('vIgghnnE5Lg')
+        setColor('linear-gradient(45deg, #fb872b, #d9e021)')
+
+        setTimeout(() => {
+          speak('ทรงพระเจริญ')
+          setText('สุขสันต์วันเกิด')
+        }, 1500)
+
+        return
+      } else {
+        stopVideo()
+      }
+
+      const lightColors = ['yellow', 'lightblue']
+
+      for (let thaiColor in colorMap) {
+        if (text.includes(thaiColor)) {
+          const color = colorMap[thaiColor]
+
+          for (let c of lightColors) {
+            if (c === color) return setColor(color, '#2d2d30')
           }
-        }
 
-        container.style.background = 'white'
-        textDisplay.style.color = '#2d2d30'
-      }
-
-      sl.onstart = e => {
-        if (currentSpeech) return
-
-        currentSpeech = true
-        setListening(true)
-
-        console.log('👂: ฟังอยู่')
-      }
-
-      sl.onerror = e => {
-        console.warn('Speech Recognition Error:', e.error)
-      }
-
-      sl.onresult = e => {
-        textDisplay = document.querySelector('.display')
-
-        const text = e.results[0][0].transcript
-        transcripts.push(text)
-
-        if (state.isListening) {
-          speechInput.value = text
-
-          run(text)
+          return setColor(color)
         }
       }
 
-      function listen() {
-        if (currentSpeech) return
-        if (currentTTS) return
+      container.style.background = 'white'
+      textDisplay.style.color = '#2d2d30'
+    }
 
-        try {
-          sl.start()
-        } catch (err) {
-          console.warn('Already Listening!')
-        }
+    sl.onstart = e => {
+      if (currentSpeech) return
+
+      currentSpeech = true
+      setListening(true)
+
+      console.log('👂: ฟังอยู่')
+    }
+
+    sl.onerror = e => {
+      console.warn('Speech Recognition Error:', e.error)
+
+      if (e.error === 'no-speech') {
+        showError('ไม่พบเสียงพูด กรุณาลองใหม่อีกครั้ง')
       }
+    }
 
-      sl.onend = () => {
-        currentSpeech = false
+    sl.onresult = e => {
+      textDisplay = document.querySelector('.display')
 
-        setListening(false)
+      const text = e.results[0][0].transcript
+      transcripts.push(text)
 
-        listen()
+      if (state.isListening) {
+        speechInput.value = text
+
+        run(text)
       }
+    }
 
-      function handleClick() {
-        ttsDisabledIndicator.classList.remove('visible')
+    function listen() {
+      if (currentSpeech) return
+      if (currentTTS) return
 
-        setListening(false)
-
-        sl.stop()
-        listen()
-
-        saveState()
+      try {
+        sl.start()
+      } catch (err) {
+        console.warn('Already Listening!')
       }
+    }
 
-      loadState()
+    sl.onend = () => {
+      currentSpeech = false
+
+      setListening(false)
+
+      listen()
+    }
+
+    function handleClick() {
+      ttsDisabledIndicator.classList.remove('visible')
+
+      setListening(false)
+
+      sl.stop()
       listen()
 
-      if (state.stopwatchTimer) {
-        stopWatch()
-        startWatch()
-      }
+      saveState()
+    }
 
-      window.onunload = () => {
-        saveState()
-      }
+    loadState()
+    listen()
 
-      // Auto-save
-      setInterval(saveState, 5000)
-    </script>
-  </body>
+    if (state.stopwatchTimer) {
+      stopWatch()
+      startWatch()
+    }
+
+    window.onunload = () => {
+      saveState()
+    }
+
+    // Auto-save
+    setInterval(saveState, 5000)
+  </script>
+</body>
+
 </html>
