@@ -583,13 +583,6 @@
         textDisplay.classList.add('love-text')
 
         return
-      } else if (text.includes('ตั้ง')) {
-        speak('ใครเรียกตั้งครับ')
-        setText(text.replace('ตั้ง', '<b style="color: red; font-size: 1.5em">ตั้ง</b>'))
-        setColor(`url(https://ywc16.ywc.in.th/images/speaker/23.jpg) no-repeat center`, 'white')
-        textDisplay.classList.add('love-text')
-
-        return
       } else {
         textDisplay.classList.remove('love-text')
       }
