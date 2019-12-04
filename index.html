@@ -254,7 +254,6 @@
     }
 
     let _state = {
-      isRisky: true,
       stopwatch: 0,
       stopwatchTimer: null,
       isListening: true
@@ -415,10 +414,6 @@
       'รัก': `url(${PrayuthAvatar}) no-repeat center`
     }
 
-    const setRisky = s => {
-      state.isRisky = s
-    }
-
     const setText = text => {
       textDisplay.innerHTML = text
     }
@@ -468,13 +463,6 @@
         setColor('red')
         setText(text)
 
-        if (state.isRisky) {
-          setTimeout(() => {
-            speak('หยาบคาย อีดอก')
-            setText('หยาบคาย อิดอก')
-          }, 1500)
-        }
-
         return
       }
 
@@ -483,9 +471,6 @@
 
         return
       }
-
-      if (text.includes('ไม่เสี่ยง')) return setRisky(false)
-      if (text.includes('เสี่ยง')) return setRisky(true)
 
       if (text.includes('ดูวีดีโอ')) return focusVideo()
       if (text.includes('ซ่อนวีดีโอ')) return unfocusVideo()
@@ -497,24 +482,6 @@
       if (text.includes('สวัสดี')) {
         speak('สวัสดีค่ะ')
         setText('สวัสดีค่ะ 🙌🏻')
-        return
-      }
-
-      if (state.isRisky && text.includes('คสช')) {
-        const ncpo = document.querySelector('.ncpo')
-        ncpo.classList.add('visible')
-        speak('คณะรักษาความสงบแห่งชาติ')
-        playVideo('xLYSBVmoPhY')
-
-        return
-      }
-
-      if (state.isRisky && text.includes('ประยุทธ์')) {
-        speak('ประยุทธ์พ่อมึงสิ')
-        setText('ประยุทธ์พ่อมึงสิ')
-        setColor('green')
-        playVideo('xLYSBVmoPhY')
-
         return
       }
 
@@ -589,18 +556,6 @@
 
       if (text.includes('ทะเล')) {
         playVideo('pnxFIYwGTPU')
-      } else if (state.isRisky && text.includes('โอ')) {
-        playVideo('vIgghnnE5Lg')
-        setColor('linear-gradient(45deg, #fb872b, #d9e021)')
-
-        setTimeout(() => {
-          speak('ทรงพระเจริญ')
-          setText('สุขสันต์วันเกิด')
-        }, 1500)
-
-        return
-      } else {
-        stopVideo()
       }
 
       const lightColors = ['yellow', 'lightblue']
